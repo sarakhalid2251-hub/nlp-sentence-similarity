@@ -2,102 +2,65 @@ import streamlit as st
 from sentence_transformers import SentenceTransformer, util
 from transformers import pipeline
 
-st.set_page_config(
-page_title="NLP Transformer System",
-page_icon="🤖"
-)
+st.set_page_config(page_title="NLP Transformer System", page_icon="🤖")
 
 st.title("🤖 NLP Transformer System")
 
-task = st.selectbox(
-"Select NLP Task",
-["Sentence Similarity", "Sentiment Analysis"]
-)
+task = st.selectbox("Select NLP Task", ["Sentence Similarity", "Sentiment Analysis"])
 
 if task == "Sentence Similarity":
+    st.header("🔍 Sentence Similarity")
+    st.write("Compare the meaning of two sentences.")
 
-```
-st.header("🔍 Sentence Similarity")
-st.write("Compare the meaning of two sentences.")
+    sentence1 = st.text_input("Sentence 1")
+    sentence2 = st.text_input("Sentence 2")
 
-sentence1 = st.text_input("Sentence 1")
-sentence2 = st.text_input("Sentence 2")
+    button = st.button("Calculate Similarity")
 
-button = st.button("Calculate Similarity")
+    if button and sentence1 and sentence2:
+        model = SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2", device="cpu")
 
-if button and sentence1 and sentence2:
+        embedding1 = model.encode(sentence1)
+        embedding2 = model.encode(sentence2)
 
-    model = SentenceTransformer(
-        "sentence-transformers/all-MiniLM-L6-v2",
-        device="cpu"
-    )
+        result = util.cos_sim(embedding1, embedding2).item()
 
-    embedding1 = model.encode(sentence1)
-    embedding2 = model.encode(sentence2)
+        st.write("Similarity Score:", round(result, 4))
+        st.write("Similarity Percentage:", round(result * 100, 2), "%")
 
-    result = util.cos_sim(
-        embedding1,
-        embedding2
-    ).item()
+        if result >= 0.70:
+            st.success("✅ Similar")
+        else:
+            st.error("❌ Not Similar")
 
-    st.write(
-        "Similarity Score:",
-        round(result, 4)
-    )
-
-    st.write(
-        "Similarity Percentage:",
-        round(result * 100, 2),
-        "%"
-    )
-
-    if result >= 0.70:
-        st.success("✅ Similar")
-    else:
-        st.error("❌ Not Similar")
-
-elif button:
-
-    st.warning("Please enter both sentences.")
-```
+    elif button:
+        st.warning("Please enter both sentences.")
 
 else:
+    st.header("😊 Sentiment Analysis")
+    st.write("Analyze whether the text is positive or negative.")
 
-```
-st.header("😊 Sentiment Analysis")
-st.write("Analyze whether the text is positive or negative.")
+    text = st.text_area("Enter your text")
 
-text = st.text_area(
-    "Enter your text",
-    placeholder="Example: I really enjoyed this project!"
-)
+    button = st.button("Analyze Sentiment")
 
-button = st.button("Analyze Sentiment")
+    if button and text:
+        sentiment_model = pipeline(
+            "sentiment-analysis",
+            model="distilbert/distilbert-base-uncased-finetuned-sst-2-english"
+        )
 
-if button and text:
+        result = sentiment_model(text)[0]
 
-    sentiment_model = pipeline(
-        "sentiment-analysis",
-        model="distilbert/distilbert-base-uncased-finetuned-sst-2-english"
-    )
+        label = result["label"]
+        confidence = result["score"] * 100
 
-    result = sentiment_model(text)[0]
+        if label == "POSITIVE":
+            st.success("😊 Positive")
+        else:
+            st.error("😞 Negative")
 
-    label = result["label"]
-    confidence = result["score"] * 100
+        st.write("Confidence:", round(confidence, 2), "%")
 
-    if label == "POSITIVE":
-        st.success("😊 Positive")
-    else:
-        st.error("😞 Negative")
-
-    st.write(
-        "Confidence:",
-        round(confidence, 2),
-        "%"
-    )
-
-elif button:
-
-    st.warning("Please enter some text.")
-
+    elif button:
+        st.warning("Please enter some text.")
