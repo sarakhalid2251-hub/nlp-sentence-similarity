@@ -2,20 +2,13 @@ import streamlit as st
 from sentence_transformers import SentenceTransformer, util
 from transformers import pipeline
 
-# Page configuration
-
 st.set_page_config(
 page_title="NLP Transformer System",
-page_icon="🤖",
-layout="centered"
+page_icon="🤖"
 )
-
-# Title
 
 st.title("🤖 NLP Transformer System")
 st.write("Text Understanding using Transformer Models")
-
-# Sidebar
 
 task = st.sidebar.selectbox(
 "Select NLP Task",
@@ -25,47 +18,27 @@ task = st.sidebar.selectbox(
 ]
 )
 
-# ---------------------------------------------------
-
-# LOAD SENTENCE SIMILARITY MODEL
-
-# ---------------------------------------------------
-
 @st.cache_resource
 def load_similarity_model():
-return SentenceTransformer(
+model = SentenceTransformer(
 "sentence-transformers/all-MiniLM-L6-v2",
 device="cpu"
 )
-
-# ---------------------------------------------------
-
-# LOAD SENTIMENT ANALYSIS MODEL
-
-# ---------------------------------------------------
+return model
 
 @st.cache_resource
 def load_sentiment_model():
-return pipeline(
+model = pipeline(
 "sentiment-analysis",
 model="distilbert/distilbert-base-uncased-finetuned-sst-2-english",
 device=-1
 )
-
-# ---------------------------------------------------
-
-# SENTENCE SIMILARITY
-
-# ---------------------------------------------------
+return model
 
 if task == "🔍 Sentence Similarity":
 
 ```
 st.header("🔍 Sentence Similarity")
-
-st.write(
-    "Compare the semantic meaning of two sentences using a Transformer model."
-)
 
 sentence1 = st.text_area(
     "Sentence 1",
@@ -80,11 +53,9 @@ sentence2 = st.text_area(
 if st.button("Calculate Similarity"):
 
     if not sentence1.strip() or not sentence2.strip():
-
         st.warning("⚠️ Please enter both sentences.")
 
     else:
-
         model = load_similarity_model()
 
         embedding1 = model.encode(
@@ -110,34 +81,15 @@ if st.button("Calculate Similarity"):
             result = "❌ Not Similar"
 
         st.subheader("Similarity Result")
-
-        st.write(
-            f"**Similarity Score:** {similarity:.4f}"
-        )
-
-        st.write(
-            f"**Similarity Percentage:** {percentage:.2f}%"
-        )
-
-        st.write(
-            f"**Result:** {result}"
-        )
+        st.write(f"**Similarity Score:** {similarity:.4f}")
+        st.write(f"**Similarity Percentage:** {percentage:.2f}%")
+        st.write(f"**Result:** {result}")
 ```
-
-# ---------------------------------------------------
-
-# SENTIMENT ANALYSIS
-
-# ---------------------------------------------------
 
 elif task == "😊 Sentiment Analysis":
 
 ```
 st.header("😊 Sentiment Analysis")
-
-st.write(
-    "Analyze whether the sentiment of the text is Positive or Negative."
-)
 
 text = st.text_area(
     "Enter Text",
@@ -147,11 +99,9 @@ text = st.text_area(
 if st.button("Analyze Sentiment"):
 
     if not text.strip():
-
         st.warning("⚠️ Please enter some text.")
 
     else:
-
         sentiment_model = load_sentiment_model()
 
         result = sentiment_model(text)[0]
@@ -165,14 +115,7 @@ if st.button("Analyze Sentiment"):
             sentiment = "😞 Negative"
 
         st.subheader("Sentiment Result")
-
-        st.write(
-            f"**Sentiment:** {sentiment}"
-        )
-
-        st.write(
-            f"**Confidence Score:** {confidence:.2f}%"
-        )
-
+        st.write(f"**Sentiment:** {sentiment}")
+        st.write(f"**Confidence Score:** {confidence:.2f}%")
         st.progress(int(confidence))
-```
+
