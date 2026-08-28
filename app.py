@@ -1,4 +1,4 @@
-```python
+
 import streamlit as st
 from sentence_transformers import SentenceTransformer, util
 
@@ -63,4 +63,4 @@ if st.button("Calculate Similarity"):
         st.write(f"**Similarity Score:** {similarity:.4f}")
         st.write(f"**Similarity Percentage:** {percentage:.2f}%")
         st.write(f"**Result:** {result}")
-```
+
