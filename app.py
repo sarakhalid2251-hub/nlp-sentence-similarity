@@ -15,7 +15,7 @@ if task == "Sentence Similarity":
 st.header("🔍 Sentence Similarity")
 st.write("Compare the meaning of two sentences.")
 
-
+```
 sentence1 = st.text_input("Sentence 1")
 sentence2 = st.text_input("Sentence 2")
 
@@ -42,13 +42,13 @@ if button and sentence1 and sentence2:
 
 elif button:
     st.warning("Please enter both sentences.")
-
+```
 
 elif task == "Sentiment Analysis":
 st.header("😊 Sentiment Analysis")
 st.write("Analyze whether the text is positive or negative.")
 
-
+```
 text = st.text_area("Enter your text")
 
 button = st.button("Analyze Sentiment")
@@ -73,17 +73,14 @@ if button and text:
 
 elif button:
     st.warning("Please enter some text.")
-
+```
 
 else:
 st.header("📝 Text Summarization")
 st.write("Generate a short summary of the given text.")
 
-
-text = st.text_area(
-    "Enter text to summarize",
-    height=200
-)
+```
+text = st.text_area("Enter text to summarize", height=200)
 
 button = st.button("Generate Summary")
 
@@ -93,10 +90,8 @@ if button and text:
         model="sshleifer/distilbart-cnn-12-6"
     )
 
-    word_count = len(text.split())
-
-    if word_count < 30:
-        st.warning("Please enter a longer paragraph (at least 30 words).")
+    if len(text.split()) < 30:
+        st.warning("Please enter a longer paragraph.")
     else:
         summary = summarizer(
             text,
