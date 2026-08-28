@@ -35,7 +35,11 @@ if task == "Sentence Similarity":
 
     elif button:
         st.warning("Please enter both sentences.")
-
+        
+task = st.selectbox(
+    "Select NLP Task",
+    ["Sentence Similarity", "Sentiment Analysis", "Text Summarization"]
+)
 else:
     st.header("😊 Sentiment Analysis")
     st.write("Analyze whether the text is positive or negative.")
